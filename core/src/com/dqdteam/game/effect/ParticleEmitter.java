@@ -17,35 +17,52 @@ public class ParticleEmitter {
     public Texture bigTexture;
     public Texture mediumTexture;
     public Texture smallTexture;
+    public Texture deathTexture;
+    public Texture iceTexture;
     public String state = "stop_emit";
 
     public ParticleEmitter(MonsterPong game) {
         bigTexture = game.largeParticleImage;
         mediumTexture = game.mediumParticleImage;
         smallTexture = game.smallParticleImage;
+        deathTexture = game.deathParticleImage;
+        iceTexture = game.iceParticleImage;
         timer = TimeUtils.millis();
     }
 
     public void update(Ball ball, float delta) {
-        if (state.equals("emit")) {
-            makeParticles(ball, delta);
-            updateParticles(delta);
-            killOldParticles();
-        } else {
-            updateParticles(delta);
-            killOldParticles();
+        switch (ball.status) {
+            case A100_BALL:
+                makeParticles(ball, delta, smallTexture);
+                break;
+            case A200_BALL:
+                makeParticles(ball, delta, mediumTexture);
+                break;
+            case X2_BALL:
+                makeParticles(ball, delta, bigTexture);
+                break;
+            case DEATH_BALL:
+                makeParticles(ball, delta, deathTexture);
+                break;
+            case ICE_BALL:
+                makeParticles(ball, delta, iceTexture);
+                break;
         }
+        updateParticles(delta);
+        killOldParticles();
     }
 
-    private void makeParticles(Ball ball, float delta) {
+    private void makeParticles(Ball ball, float delta, Texture type) {
         if (TimeUtils.timeSinceMillis(timer)
                 > (14 / ball.getCombinedVelocity(delta))) {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 1; i++) {
                 float x = ball.getX() + (float) Math.random() * ball.getWidth();
                 float y = ball.getY() + (float) Math.random() * ball.getHeight();
                 float xVel = (float) Math.random() * MAX_PARTICLE_SPEED - (MAX_PARTICLE_SPEED / 2);
                 float yVel = (float) Math.random() * MAX_PARTICLE_SPEED - (MAX_PARTICLE_SPEED / 2);
-                particles.add(new Particle(x, y, xVel, yVel, TimeUtils.millis(), this));
+                Particle oneparticle = new Particle(x, y, xVel, yVel, TimeUtils.millis(), this);
+                oneparticle.setImage(type);
+                particles.add(oneparticle);
             }
             timer = TimeUtils.millis();
         }
@@ -57,7 +74,7 @@ public class ParticleEmitter {
         }
     }
 
-    private void killOldParticles() {
+    public void killOldParticles() {
         Iterator<Particle> itr = particles.iterator();
         while (itr.hasNext()) {
             Particle particle = itr.next();

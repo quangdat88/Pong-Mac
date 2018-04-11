@@ -1,5 +1,7 @@
 package com.dqdteam.game;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -10,15 +12,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.dqdteam.game.accessor.BallAccessor;
 import com.dqdteam.game.accessor.CameraAccessor;
 import com.dqdteam.game.accessor.PaddleAccessor;
 import com.dqdteam.game.accessor.TableAccessor;
+import com.dqdteam.game.objects.Ball;
 import com.dqdteam.game.objects.Paddle;
 import com.dqdteam.game.screen.LoadingScreen;
 import com.dqdteam.game.screen.MainPlayScreen;
-
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenManager;
 
 //Oke
 public class MonsterPong extends Game {
@@ -36,6 +37,7 @@ public class MonsterPong extends Game {
     public TweenManager tweenManager;
     public AssetManager assetManager;
     public LabelStyle titleStyle;
+    public LabelStyle velStyle;
     public Texture ballImage;
     public Texture leftButton;
     public Texture rightButton;
@@ -44,8 +46,14 @@ public class MonsterPong extends Game {
     public Texture smallParticleImage;
     public Texture mediumParticleImage;
     public Texture largeParticleImage;
+    public Texture deathParticleImage;
+    public Texture iceParticleImage;
     public Texture netImage;
     public BitmapFont scoreFont;
+
+    public Texture cartoon1Background;
+    public Texture cartoon2Background;
+    public Texture cartoon3Background;
 
     public MonsterPong(int width,int height){
     	this.width  = width;
@@ -75,6 +83,7 @@ public class MonsterPong extends Game {
         Tween.registerAccessor(Camera.class, new CameraAccessor());
         Tween.registerAccessor(Table.class, new TableAccessor());
         Tween.registerAccessor(Paddle.class, new PaddleAccessor());
+        Tween.registerAccessor(Ball.class, new BallAccessor());
     }
 
 }

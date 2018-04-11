@@ -1,7 +1,6 @@
 package com.dqdteam.game.android;
 
 import android.os.Bundle;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.dqdteam.game.MonsterPong;
@@ -13,6 +12,6 @@ public class AndroidLauncher extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.useImmersiveMode = true;
 
-		initialize(new MonsterPong(320,480), config);
+		initialize(new MonsterPong(320,570), config);
 	}
 }

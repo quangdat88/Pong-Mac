@@ -2,7 +2,6 @@ package com.dqdteam.game.effect;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.TimeUtils;
 
 
 public class Particle extends Rectangle {
@@ -17,7 +16,7 @@ public class Particle extends Rectangle {
     public Particle(float posX, float posY, float xVel,
                     float yVel, long birthTime, ParticleEmitter particleEmitter) {
         this.particleEmitter = particleEmitter;
-        image = particleEmitter.bigTexture;
+        image = particleEmitter.smallTexture;
         setSize();
         x = posX;
         y = posY;
@@ -36,11 +35,11 @@ public class Particle extends Rectangle {
     }
 
     public void update(float delta) {
-        shrink();
+        //shrink();
         move(delta);
     }
 
-    private void shrink() {
+   /* private void shrink() {
         if (TimeUtils.timeSinceMillis(shrinkTimer) > 170) {
             if (state.equals("stage1")) {
                 state = "stage2";
@@ -53,7 +52,7 @@ public class Particle extends Rectangle {
                 setSize();
             }
         }
-    }
+    }*/
 
     public void move(float delta) {
         x += xVel * delta;

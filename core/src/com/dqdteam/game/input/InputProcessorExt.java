@@ -4,123 +4,153 @@ import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.equations.Sine;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
+import com.dqdteam.game.Globar;
 import com.dqdteam.game.MonsterPong;
+import com.dqdteam.game.StatusBall;
 import com.dqdteam.game.accessor.PaddleAccessor;
+import com.dqdteam.game.objects.Ball;
 import com.dqdteam.game.objects.Controller;
 import com.dqdteam.game.objects.Paddle;
 
 public class InputProcessorExt implements InputProcessor {
-	private final Vector3 tmpV = new Vector3();
-	private final float Time = 1f;
-	Controller leftCtr;
-	Controller rightCtr;
-	Controller middleCtr;
-	Paddle paddle1;
-	Paddle paddle2;
-	MonsterPong game;
-	Camera camera;
-	boolean touch = false;
-	
+    private final Vector3 tmpV = new Vector3();
+    float timeMove;
+    Controller leftCtr;
+    Controller rightCtr;
+    Controller middleCtr;
+    Paddle paddle1;
+    Paddle paddle2;
+    MonsterPong game;
+    Camera camera;
+    float velocityPaddle = 0;
+    Ball ball;
+    final double MAX_PER = 5;
+    final double MAX_NOR = 10;
+    final double MAX_BAD = 500;
 
-	public InputProcessorExt(Controller[] aController, Paddle[] aPaddle,
-			MonsterPong game, Camera camera) {
-		this.leftCtr = aController[0];
-		this.middleCtr = aController[1];
-		this.rightCtr = aController[2];
-		this.paddle1 = aPaddle[0];
-		this.paddle2 = aPaddle[1];
-		this.game = game;
-		this.camera = camera;
-	}
+    public InputProcessorExt(Controller[] aController, Paddle[] aPaddle,
+                             MonsterPong game, Camera camera, Ball ball) {
+        this.leftCtr = aController[0];
+        this.middleCtr = aController[1];
+        this.rightCtr = aController[2];
+        this.paddle1 = aPaddle[0];
+        this.paddle2 = aPaddle[1];
+        this.game = game;
+        this.ball = ball;
+        this.camera = camera;
+        timeMove = Globar.getDefaulTimeMovePaddle();
+    }
 
-	public void setPaddleLocationForTouchDown(Vector3 pos) {
-		if (pos.x >= leftCtr.x && pos.x <= (leftCtr.x + leftCtr.width)
-				&& pos.y >= leftCtr.y && pos.y <= (leftCtr.y + leftCtr.height)) {
-			leftCtr.pressController();
-			Vector3 posmove = new Vector3();
-			//posmove.x = paddle1.getCenterX() - 20;			
-			posmove.x = 0;
-			if (leftCtr.isPress)
-				paddleMoveTween(paddle1, posmove,Time);
-		}
+    public void setPaddleLocationForTouchDown(Vector3 pos) {
+        Vector3 posmove = new Vector3();
 
-		if (pos.x >= rightCtr.x && pos.x <= (rightCtr.x + rightCtr.width)
-				&& pos.y >= rightCtr.y
-				&& pos.y <= (rightCtr.y + rightCtr.height)) {
-			rightCtr.pressController();
-			Vector3 posmove = new Vector3();
-			posmove.x = game.width;			
-			if (rightCtr.isPress)
-				paddleMoveTween(paddle1, posmove,Time);
-		}
+        if (pos.x >= leftCtr.x && pos.x <= (leftCtr.x + leftCtr.width)
+                && pos.y >= leftCtr.y && pos.y <= (leftCtr.y + leftCtr.height)) {
+            leftCtr.pressController();
+            //posmove.x = paddle1.getCenterX() - 20;
+            posmove.x = 0;
+            /*if (velocityPaddle != 0)
+                posmove.x = (paddle1.getX() - velocityPaddle) < 0 ? 0 : paddle1.getX() - velocityPaddle;*/
+            if (leftCtr.isPress)
+                paddleMoveTween(paddle1, posmove, timeMove);
+        }
 
-	}
+        if (pos.x >= rightCtr.x && pos.x <= (rightCtr.x + rightCtr.width)
+                && pos.y >= rightCtr.y
+                && pos.y <= (rightCtr.y + rightCtr.height)) {
+            rightCtr.pressController();
+            posmove.x = game.width;
+            /*if (velocityPaddle != 0)
+                posmove.x = (paddle1.getRight() + velocityPaddle) > game.width ? game.width : paddle1.getRight() + velocityPaddle;*/
+            if (rightCtr.isPress)
+                paddleMoveTween(paddle1, posmove, timeMove);
+        }
 
-	private void paddleMoveTween(final Paddle paddle, Vector3 pos,float time) {
+        if (pos.x >= middleCtr.x && pos.x <= (middleCtr.x + middleCtr.width)
+                && pos.y >= middleCtr.y
+                && pos.y <= (middleCtr.y + middleCtr.height)) {
+            middleCtr.pressController();
+            middleCtr.notPressController();
+            float distanceBallvsPaddle = Math.abs(ball.y-paddle1.y);
+            if(distanceBallvsPaddle >0 && distanceBallvsPaddle <MAX_PER ){
+                ball.status =StatusBall.A200_BALL;
+            }else if(distanceBallvsPaddle >MAX_PER && distanceBallvsPaddle <MAX_NOR ){
+                ball.status =StatusBall.A100_BALL;
+            }else if(distanceBallvsPaddle >MAX_NOR && distanceBallvsPaddle <MAX_BAD ){
+                ball.status =StatusBall.A100_BALL;
+            }
+        }
+    }
 
-		TweenCallback tweenCallback = new TweenCallback() {
-			@Override
-			public void onEvent(int type, BaseTween<?> source) {
-				paddle.setTweening(false);
-			}
-		};
+    public void setTime(Ball ball, Paddle collision) {
+        if (ball != null && ball.status == StatusBall.ICE_BALL && collision.name == "paddle2") {
+            timeMove = 5f;
+        } else {
+            timeMove = Globar.getDefaulTimeMovePaddle();
+        }
+    }
 
-		paddle.setTweening(true);
-		Tween.to(paddle, PaddleAccessor.POSITION_X, time).ease(Sine.INOUT)
-				.target(pos.x).setCallback(tweenCallback)
-				.start(game.tweenManager);
-	}
+    private void paddleMoveTween(final Paddle paddle, Vector3 pos, float time) {
 
-	@Override
-	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+        TweenCallback tweenCallback = new TweenCallback() {
+            @Override
+            public void onEvent(int type, BaseTween<?> source) {
+                paddle.setTweening(false);
+            }
+        };
 
-	@Override
-	public boolean keyUp(int keycode) {	
-		return false;
-	}
+        paddle.setTweening(true);
+        Tween.to(paddle, PaddleAccessor.POSITION_X, time).ease(Sine.INOUT)
+                .target(pos.x).setCallback(tweenCallback)
+                .start(game.tweenManager);
+    }
 
-	@Override
-	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean keyDown(int keycode) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
 
-		setPaddleLocationForTouchDown(camera.unproject(tmpV.set(screenX,
-				screenY, 0)));
-		return false;
-	}
+    @Override
+    public boolean keyTyped(char character) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        setPaddleLocationForTouchDown(camera.unproject(tmpV.set(screenX, screenY, 0)));
+        return false;
+    }
 
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
 
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

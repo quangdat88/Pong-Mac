@@ -1,8 +1,7 @@
 package com.dqdteam.game.accessor;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-
 import aurelienribon.tweenengine.TweenAccessor;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class TableAccessor implements TweenAccessor<Table> {
 

@@ -9,8 +9,8 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		System.setProperty("org.lwjgl.opengl.Display.allowSoftwareOpenGL", "true");
         config.width = 320;
-        config.height = 480;
-        config.useGL30 = true;
+        config.height = 570;
+        config.useGL30 = false;
         new LwjglApplication(new MonsterPong(config.width,config.height), config);
     }
 }

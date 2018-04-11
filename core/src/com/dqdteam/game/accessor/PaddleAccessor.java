@@ -1,8 +1,7 @@
 package com.dqdteam.game.accessor;
 
-import com.dqdteam.game.objects.Paddle;
-
 import aurelienribon.tweenengine.TweenAccessor;
+import com.dqdteam.game.objects.Paddle;
 
 public class PaddleAccessor implements TweenAccessor<Paddle> {
 

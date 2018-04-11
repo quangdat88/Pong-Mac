@@ -4,11 +4,12 @@ import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.equations.Back;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -36,6 +37,10 @@ public class MainMenuScreen implements Screen {
     int WIDTH;
     int HEIGHT;
     Screen nextScreen;
+    private boolean[] useDots;
+
+    //background
+    private Sprite background;
 
     public MainMenuScreen(MonsterPong g) {
         game = g;
@@ -45,6 +50,10 @@ public class MainMenuScreen implements Screen {
 
         stage = new Stage(new StretchViewport(WIDTH, HEIGHT));
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+
+        TextureAtlas atlas = game.assetManager.get("data/pack.atlas", TextureAtlas.class);
+//        background = atlas.createSprite("background");
+        background = new Sprite(g.cartoon1Background);
 
         table = new Table();
         table.setFillParent(true);
@@ -57,6 +66,7 @@ public class MainMenuScreen implements Screen {
             public void touchUp(InputEvent e, float x, float y, int point, int button) {
                 nextScreen = new MainPlayScreen(game);
                 Gdx.input.setInputProcessor(null);
+                game.setScreen(nextScreen);
                 setOutroTween();
             }
         });
@@ -81,6 +91,17 @@ public class MainMenuScreen implements Screen {
             }
         });
 
+        TextButton levelButton = new TextButton("LevelMap", skin);
+        levelButton.addListener(new ClickListener() {
+            @Override
+            public void touchUp(InputEvent e, float x, float y, int point, int button) {
+                nextScreen = new LevelScreen(game);
+                Gdx.input.setInputProcessor(null);
+                game.setScreen(nextScreen);
+                setOutroTween();
+            }
+        });
+
         table.add(titleLabel).pad(30);
         table.row();
         table.add(textButton).width(200).height(75);
@@ -88,6 +109,8 @@ public class MainMenuScreen implements Screen {
         table.add(settingsButton).width(200).height(75);
         table.row();
         table.add(creditsButton).width(200).height(75);
+        table.row();
+        table.add(levelButton).width(200).height(75);
 
         stage.addActor(table);
     }
@@ -96,15 +119,14 @@ public class MainMenuScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0.075f, 0.059f, 0.188f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         normalUpdate(delta);
     }
 
     
     private void normalUpdate(float delta) {
         game.tweenManager.update(delta);
-        updateBallMovement(delta);
-        particleEmitter.update(ball, delta);
+        //updateBallMovement(delta);
+        //particleEmitter.update(ball, delta);
         stage.act(delta);
         batchDraw();
         stage.draw();
@@ -123,9 +145,10 @@ public class MainMenuScreen implements Screen {
         game.batch.setProjectionMatrix(stage.getCamera().combined);
         game.batch.begin();
         particleEmitter.drawParticles(game.batch);
-        if (!(ball == null)) {
+        background.draw(game.batch);
+       /* if (!(ball == null)) {
             game.batch.draw(ball.ballImage, ball.x, ball.y);
-        }
+        }*/
         game.batch.end();
     }
 
@@ -150,25 +173,20 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
         setupMusic();
-        setTableTween();
+        //setTableTween();
     }
 
     private void setupMusic() {
         if (game.musicToPlay == null) {
-            game.musicToPlay = game.assetManager.get("8bit_airship.ogg", Music.class);
+            game.musicToPlay = game.assetManager.get("battle.mp3", Music.class);
         }
 
         if (game.musicOn && !(game.musicToPlay.isPlaying()))  {
             game.musicToPlay.stop();
-            game.musicToPlay = game.assetManager.get("8bit_airship.ogg", Music.class);
+            game.musicToPlay = game.assetManager.get("battle.mp3", Music.class);
             game.musicToPlay.setVolume(0.45f);
             game.musicToPlay.play();
             game.musicToPlay.setLooping(true);
@@ -219,6 +237,11 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resume() {
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
 
     }
 

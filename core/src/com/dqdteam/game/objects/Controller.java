@@ -2,13 +2,13 @@ package com.dqdteam.game.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
-import com.dqdteam.game.MonsterPong;
 
 public class Controller extends Rectangle {
 
 	public Texture button;
 	public String name;
 	public boolean isPress = false;
+	public boolean isTouch = true;
 
 	public Controller(Texture button, String name, float posX, float posY) {
 		this.button = button;
@@ -22,7 +22,16 @@ public class Controller extends Rectangle {
 	public void pressController(){
 		this.isPress = true;
 	}
-	
+
+	public void canPressController(){
+		this.isTouch = true;
+	}
+
+	public void notPressController(){
+		this.isTouch = false;
+	}
+
+
 	public void upController(){
 		this.isPress = false;
 	}

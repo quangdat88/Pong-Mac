@@ -4,12 +4,12 @@ import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.equations.Back;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -34,6 +34,7 @@ public class WinScreen implements Screen {
     MonsterPong game;
     Stage stage;
     Table table;
+    private Sprite background;
 
     public WinScreen(MonsterPong g) {
         BitmapFont titleFont = getFont();
@@ -43,6 +44,7 @@ public class WinScreen implements Screen {
         LabelStyle labelStyle = new LabelStyle(titleFont, Color.WHITE);
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
+        background = new Sprite(g.cartoon2Background);
 
         table = new Table();
         table.setFillParent(true);
@@ -88,10 +90,13 @@ public class WinScreen implements Screen {
         Gdx.gl.glClearColor(0.075f, 0.059f, 0.188f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.tweenManager.update(delta);
+        game.batch.setProjectionMatrix(stage.getCamera().combined);
+        game.batch.begin();
+        background.draw(game.batch);
+        game.batch.end();
 
         stage.act(delta);
         stage.draw();
-
     }
 
 

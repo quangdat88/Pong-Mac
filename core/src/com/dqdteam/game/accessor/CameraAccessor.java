@@ -1,9 +1,8 @@
 package com.dqdteam.game.accessor;
 
 
-import com.badlogic.gdx.graphics.Camera;
-
 import aurelienribon.tweenengine.TweenAccessor;
+import com.badlogic.gdx.graphics.Camera;
 
 public class CameraAccessor implements TweenAccessor<Camera> {
 
