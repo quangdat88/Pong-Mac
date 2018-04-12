@@ -33,7 +33,7 @@ public final class Globar {
 
     private static float DEFAUL_VEL_MONSTER = 50f;
 
-    private static int DEFAUL_VEL_BALLVSWALL = 10;
+    private static int DEFAUL_VEL_BALLVSWALL = 50;
 
     private static Color DEFAUL_COLOR_NORMAL = Color.WHITE;
     private static Color DEFAUL_COLOR_GOOD = Color.CYAN;

@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.dqdteam.game.Globar;
 import com.dqdteam.game.MonsterPong;
 import com.dqdteam.game.StatusBall;
+import com.dqdteam.game.StatusCollision;
 import com.dqdteam.game.accessor.PaddleAccessor;
 import com.dqdteam.game.objects.Ball;
 import com.dqdteam.game.objects.Controller;
@@ -71,16 +72,15 @@ public class InputProcessorExt implements InputProcessor {
 
         if (pos.x >= middleCtr.x && pos.x <= (middleCtr.x + middleCtr.width)
                 && pos.y >= middleCtr.y
-                && pos.y <= (middleCtr.y + middleCtr.height)) {
+                && pos.y <= (middleCtr.y + middleCtr.height) && middleCtr.getStatusController() == StatusCollision.NONE) {
             middleCtr.pressController();
-            middleCtr.notPressController();
-            float distanceBallvsPaddle = Math.abs(ball.y-paddle1.y);
-            if(distanceBallvsPaddle >0 && distanceBallvsPaddle <MAX_PER ){
-                ball.status =StatusBall.A200_BALL;
-            }else if(distanceBallvsPaddle >MAX_PER && distanceBallvsPaddle <MAX_NOR ){
-                ball.status =StatusBall.A100_BALL;
-            }else if(distanceBallvsPaddle >MAX_NOR && distanceBallvsPaddle <MAX_BAD ){
-                ball.status =StatusBall.A100_BALL;
+            float distanceBallvsPaddle = Math.abs(ball.y - paddle1.y);
+            if (distanceBallvsPaddle > 0 && distanceBallvsPaddle < MAX_PER) {
+                middleCtr.setStatusController(StatusCollision.PERFECH);
+            } else if (distanceBallvsPaddle > MAX_PER && distanceBallvsPaddle < MAX_NOR) {
+                middleCtr.setStatusController(StatusCollision.NORMAL);
+            } else if (distanceBallvsPaddle > MAX_NOR && distanceBallvsPaddle < MAX_BAD) {
+                middleCtr.setStatusController(StatusCollision.BAD);
             }
         }
     }

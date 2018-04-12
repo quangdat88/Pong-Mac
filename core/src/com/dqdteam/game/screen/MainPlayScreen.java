@@ -131,6 +131,7 @@ public class MainPlayScreen implements Screen {
         aPad[0] = paddle1;
         aPad[1] = boss;
         input = new InputProcessorExt(aCtrl, aPad, gam, camera, ball);
+
     }
 
     // di chuyen cua Boss
@@ -169,6 +170,7 @@ public class MainPlayScreen implements Screen {
         leftCtr = new Controller(game.leftButton, "leftController", 0, 10);
         rightCtr = new Controller(game.rightButton, "rightController", width - 64, 10);
         middleCtr = new Controller(game.perButton, "middleControoler", (width - 64) / 2, 10);
+        middleCtr.setStatusController(StatusCollision.NONE);
     }
 
     @Override
@@ -274,7 +276,8 @@ public class MainPlayScreen implements Screen {
                     if (hitPaddle.name.equals("paddle1")) {
                         ball.setPosition(ball.x, (hitPaddle.y));
                         paddleCollision = paddle1;
-                        middleCtr.canPressController();
+                        middleCtr.effectBall(ball);
+                        middleCtr.setStatusController(StatusCollision.NONE);
                     } else if (hitPaddle.name.equals("boss")) {
                         ball.setPosition(ball.x, (hitPaddle.y - ball.height));
                         paddleCollision = boss;
